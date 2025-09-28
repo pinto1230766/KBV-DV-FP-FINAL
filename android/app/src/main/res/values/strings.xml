@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">KBV DV LYON .FP</string>
+    <string name="title_activity_main">KBV DV LYON .FP</string>
+    <string name="package_name">com.kbv.dvlyon.fp</string>
+    <string name="custom_url_scheme">com.kbv.dvlyon.fp</string>
+</resources>

@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+@keyframes gradient-animation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animated-gradient-bg {
+    background: linear-gradient(-45deg, #0f172a, #1e293b, #3b82f6, #2dd4bf, #a78bfa);
+    background-size: 600% 600%;
+    animation: gradient-animation 20s ease infinite;
+}
+
+.header-safe-area {
+  padding-top: env(safe-area-inset-top);
+}
+.mobile-nav-safe-area {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* JW Theme - Dark Mode */
+.theme-jw.dark body.animated-gradient-bg {
+    background: #5d5375 !important;
+    animation: none;
+}
+.theme-jw.dark .dark\:bg-card-dark { background-color: #4a425e; }
+.theme-jw.dark .dark\:bg-background-dark { background-color: #4a425e; }
+.theme-jw.dark .dark\:bg-primary-light\/10 { background-color: rgba(237, 233, 244, 0.07); }
+.theme-jw.dark .dark\:bg-primary-light\/20 { background-color: rgba(237, 233, 244, 0.1); }
+.theme-jw.dark .dark\:bg-glass-dark { background-color: rgba(74, 66, 94, 0.4); }
+.theme-jw.dark .dark\:border-border-dark { border-color: #6e6485; }
+.theme-jw.dark .dark\:border-white\/10 { border-color: rgba(237, 233, 244, 0.15); }
+
+/* JW Theme - Light Mode */
+.theme-jw:not(.dark) body.animated-gradient-bg {
+    background: #e9e7f2 !important; /* Lavender background */
+    animation: none;
+}
+.theme-jw:not(.dark) .bg-card-light { background-color: #ffffff; }
+.theme-jw:not(.dark) .bg-gray-50 { background-color: #f6f5fa; }
+.theme-jw:not(.dark) .bg-gray-100 { background-color: #f0eef7; }
+.theme-jw:not(.dark) .bg-gray-200 { background-color: #e5e2f1; }
+.theme-jw:not(.dark) .bg-glass { background-color: rgba(255, 255, 255, 0.6); }
+.theme-jw:not(.dark) .border-border-light { border-color: #dcd9e8; }
+.theme-jw:not(.dark) .text-primary { color: #5d5375; }
+.theme-jw:not(.dark) .text-text-main { color: #3d3750; }
+.theme-jw:not(.dark) .text-text-muted { color: #7a7392; }
+.theme-jw:not(.dark) .font-display { color: #5d5375; }
+
+@media print {
+  body, #root {
+    height: auto;
+    overflow: visible;
+    background: white !important; /* Remove background for printing */
+  }
+  .no-print {
+    display: none !important;
+  }
+  main {
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+  @page {
+    size: A4 landscape;
+    margin: 1cm;
+  }
+  /* Ensure background colors are printed */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

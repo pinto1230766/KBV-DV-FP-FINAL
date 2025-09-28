@@ -1,0 +1,48 @@
+{
+  "short_name": "KBV DV LYON",
+  "name": "KBV DV LYON .FP",
+  "description": "Une application pour gérer l'accueil des orateurs visiteurs.",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23b91c1c'/%3E%3Ctext x='50' y='48' dominant-baseline='middle' text-anchor='middle' font-family='Montserrat, sans-serif' font-size='35' font-weight='bold' fill='white'%3EKBV%3C/text%3E%3Ctext x='50' y='70' dominant-baseline='middle' text-anchor='middle' font-family='Inter, sans-serif' font-size='15' font-weight='bold' fill='white'%3EDV LYON%3C/text%3E%3C/svg%3E",
+      "type": "image/svg+xml",
+      "sizes": "48x48 72x72 96x96 128x128 144x144 192x192 256x256 512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23b91c1c'/%3E%3Ctext x='50' y='48' dominant-baseline='middle' text-anchor='middle' font-family='Montserrat, sans-serif' font-size='35' font-weight='bold' fill='white'%3EKBV%3C/text%3E%3Ctext x='50' y='70' dominant-baseline='middle' text-anchor='middle' font-family='Inter, sans-serif' font-size='15' font-weight='bold' fill='white'%3EDV LYON%3C/text%3E%3C/svg%3E",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#b91c1c",
+  "background_color": "#F0F2F5",
+  "shortcuts": [
+    {
+      "name": "Planifier une visite",
+      "short_name": "Planifier",
+      "description": "Programmer une nouvelle visite d'orateur",
+      "url": "/?action=schedule",
+      "icons": [{ "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23b91c1c'/%3E%3Cpath d='M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z' fill='white'/%3E%3C/svg%3E", "sizes": "96x96" }]
+    },
+    {
+      "name": "Ajouter un orateur",
+      "short_name": "Orateur",
+      "description": "Ajouter un nouvel orateur à la liste",
+      "url": "/?action=add_speaker",
+      "icons": [{ "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23b91c1c'/%3E%3Cpath d='M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z' fill='white'/%3E%3C/svg%3E", "sizes": "96x96" }]
+    },
+    {
+      "name": "Ajouter un contact d'accueil",
+      "short_name": "Accueil",
+      "description": "Ajouter un nouveau contact pour l'accueil",
+      "url": "/?action=add_host",
+      "icons": [{ "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23b91c1c'/%3E%3Cpath d='M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z' fill='white'/%3E%3C/svg%3E", "sizes": "96x96" }]
+    }
+  ]
+}

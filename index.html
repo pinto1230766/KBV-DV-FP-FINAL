@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>KBV DV LYON .FP</title>
+    
+    <script type="importmap">
+    {
+      "imports": {
+        "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+        "react-dom": "https://aistudiocdn.com/react-dom@^19.1.1",
+        "@google/genai": "https://aistudiocdn.com/@google/genai@^1.20.0",
+        "react/": "https://aistudiocdn.com/react@^19.1.1/",
+        "react": "https://aistudiocdn.com/react@^19.1.1"
+      }
+    }
+    </script>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Theme Color for Browser UI on Mobile -->
+    <meta name="theme-color" content="#1e293b" />
+    
+    <!-- iOS PWA Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="KBV DV LYON .FP">
+    
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23b91c1c'/%3E%3Ctext x='50' y='48' dominant-baseline='middle' text-anchor='middle' font-family='Montserrat, sans-serif' font-size='35' font-weight='bold' fill='white'%3EKBV%3C/text%3E%3Ctext x='50' y='70' dominant-baseline='middle' text-anchor='middle' font-family='Inter, sans-serif' font-size='15' font-weight='bold' fill='white'%3EDV LYON%3C/text%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23b91c1c'/%3E%3Ctext x='50' y='48' dominant-baseline='middle' text-anchor='middle' font-family='Montserrat, sans-serif' font-size='35' font-weight='bold' fill='white'%3EKBV%3C/text%3E%3Ctext x='50' y='70' dominant-baseline='middle' text-anchor='middle' font-family='Inter, sans-serif' font-size='15' font-weight='bold' fill='white'%3EDV LYON%3C/text%3E%3C/svg%3E">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              display: ['Montserrat', 'sans-serif'],
+            },
+            colors: {
+              background: '#f1f5f9',
+              'background-dark': '#0f172a',
+              primary: '#1e293b', // Bleu nuit
+              'primary-light': '#334155',
+              secondary: '#2dd4bf', // Turquoise pastel
+              accent: '#a78bfa', // Lavande
+              highlight: '#f472b6', // Rose
+              orange: '#fb923c',
+              yellow: '#facc15',
+              
+              glass: 'rgba(255, 255, 255, 0.3)',
+              'glass-dark': 'rgba(30, 41, 59, 0.4)',
+              
+              'text-main': '#1e293b',
+              'text-main-dark': '#e2e8f0',
+              'text-muted': '#64748b',
+              'text-muted-dark': '#94a3b8',
+              
+              'border-light': '#e2e8f0',
+              'border-dark': '#334155',
+
+              'card-light': '#ffffff',
+              'card-dark': '#1e293b',
+            },
+            boxShadow: {
+              'soft-lg': '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+              'soft-xl': '0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+            },
+            animation: {
+              'fade-in-up': 'fade-in-up 0.5s ease-out forwards',
+              'fade-in-down': 'fade-in-down 0.5s ease-out forwards',
+              'fade-in': 'fade-in 0.4s ease-out forwards',
+              'bounce-in': 'bounce-in 0.5s ease-out forwards',
+              'pulse-slow': 'pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            },
+            keyframes: {
+              'fade-in-up': {
+                'from': { opacity: '0', transform: 'translateY(20px)' },
+                'to': { opacity: '1', transform: 'translateY(0)' },
+              },
+              'fade-in-down': {
+                'from': { opacity: '0', transform: 'translateY(-20px)' },
+                'to': { opacity: '1', transform: 'translateY(0)' },
+              },
+              'fade-in': {
+                'from': { opacity: '0' },
+                'to': { opacity: '1' },
+              },
+              'bounce-in': {
+                '0%': { opacity: '0', transform: 'scale(0.8)' },
+                '70%': { opacity: '1', transform: 'scale(1.05)' },
+                '100%': { transform: 'scale(1)' },
+              },
+               'pulse-slow': {
+                '50%': { opacity: '.6' },
+              },
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      html, body, #root {
+        height: 100%;
+        overflow: hidden;
+      }
+      @keyframes gradient-animation {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      .animated-gradient-bg {
+          background: linear-gradient(-45deg, #0f172a, #1e293b, #3b82f6, #2dd4bf, #a78bfa);
+          background-size: 600% 600%;
+          animation: gradient-animation 20s ease infinite;
+      }
+
+      .header-safe-area {
+        padding-top: env(safe-area-inset-top);
+      }
+      .mobile-nav-safe-area {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      
+      /* JW Theme - Dark Mode */
+      .theme-jw.dark body.animated-gradient-bg {
+          background: #6d6485 !important; /* Lighter purple background */
+          animation: none;
+      }
+      .theme-jw.dark .dark\:bg-card-dark { background-color: #5a5270; } /* Lighter card color */
+      .theme-jw.dark .dark\:bg-primary-light { background-color: #443c5a; } /* Shortcut buttons */
+      .theme-jw.dark .dark\:bg-background-dark { background-color: #5a5270; } /* Lighter background for consistency */
+      .theme-jw.dark .dark\:bg-primary-light\/10 { background-color: rgba(237, 233, 244, 0.07); }
+      .theme-jw.dark .dark\:bg-primary-light\/20 { background-color: rgba(237, 233, 244, 0.1); }
+      .theme-jw.dark .dark\:bg-glass-dark { background-color: rgba(90, 82, 112, 0.4); } /* Adjusted glass color */
+      .theme-jw.dark .dark\:border-border-dark { border-color: #7e7596; } /* Lighter border color */
+      .theme-jw.dark .dark\:border-white\/10 { border-color: rgba(237, 233, 244, 0.15); }
+      
+      /* Text color overrides for better contrast */
+      .theme-jw.dark .dark\:text-text-main-dark, 
+      .theme-jw.dark .text-text-main,
+      .theme-jw.dark .dark\:text-primary, 
+      .theme-jw.dark .font-display { 
+          color: #f8f7fc; 
+      }
+      .theme-jw.dark .dark\:text-text-muted-dark, 
+      .theme-jw.dark .text-text-muted,
+      .theme-jw.dark .dark\:text-primary-light { /* This fixes links like 'Demande groupée' */
+          color: #dcd7f4; 
+      }
+      
+      /* JW Theme - Light Mode */
+      .theme-jw:not(.dark) body.animated-gradient-bg {
+          background: #e9e7f2 !important; /* Lavender background */
+          animation: none;
+      }
+      .theme-jw:not(.dark) .bg-card-light { background-color: #ffffff; }
+      .theme-jw:not(.dark) .bg-gray-50 { background-color: #f6f5fa; }
+      .theme-jw:not(.dark) .bg-gray-100 { background-color: #f0eef7; }
+      .theme-jw:not(.dark) .bg-gray-200 { background-color: #e5e2f1; }
+      .theme-jw:not(.dark) .bg-glass { background-color: rgba(255, 255, 255, 0.6); }
+      .theme-jw:not(.dark) .border-border-light { border-color: #dcd9e8; }
+      .theme-jw:not(.dark) .text-primary { color: #5d5375; }
+      .theme-jw:not(.dark) .text-text-main { color: #3d3750; }
+      .theme-jw:not(.dark) .text-text-muted { color: #7a7392; }
+      .theme-jw:not(.dark) .font-display { color: #5d5375; }
+
+      .print-only { display: none; }
+      @media print {
+        body, #root {
+          height: auto;
+          overflow: visible;
+          background: white !important; /* Remove background for printing */
+        }
+        .no-print {
+          display: none !important;
+        }
+        .print-only {
+          display: block;
+        }
+        .print-page-break {
+          page-break-before: always;
+        }
+        main {
+          padding: 0 !important;
+          overflow: visible !important;
+        }
+        /* Ensure background colors are printed */
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+      }
+
+    </style>
+    <script>
+      // Applique le thème au chargement initial pour éviter le FOUC (Flash Of Unstyled Content)
+      const theme = localStorage.getItem('theme');
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const docEl = document.documentElement;
+
+      docEl.classList.remove('dark', 'theme-jw');
+
+      if (theme === 'jw') {
+        docEl.classList.add('theme-jw');
+        // Let dark mode be handled separately for JW theme
+      }
+      
+      const isDarkModeActive = localStorage.getItem('is-dark-mode');
+      if (theme === 'dark' || ((theme === 'system' || !theme) && systemPrefersDark) || (isDarkModeActive === 'true' && theme === 'jw')) {
+        docEl.classList.add('dark');
+      } else {
+        docEl.classList.remove('dark');
+      }
+    </script>
+  <link rel="stylesheet" href="/index.css">
+</head>
+  <body class="font-sans animated-gradient-bg text-text-main dark:text-text-main-dark">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
