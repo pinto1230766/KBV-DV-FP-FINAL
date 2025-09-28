@@ -103,19 +103,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
         try {
             const pdfBase64 = await html2pdf().from(element).set(options).outputPdf('base64');
-            
             const fileName = `Rapport_Tableau_de_Bord_${new Date().toISOString().slice(0,10)}.pdf`;
-            const result = await Filesystem.writeFile({
-                path: fileName,
-                data: pdfBase64,
-                directory: Directory.Cache,
-                recursive: true,
-            });
 
             await Share.share({
                 title: 'Partager le rapport du tableau de bord',
                 text: 'Voici le rapport de votre tableau de bord.',
-                url: result.uri,
+                url: `data:application/pdf;base64,${pdfBase64}`,
                 dialogTitle: 'Partager le PDF',
             });
 
