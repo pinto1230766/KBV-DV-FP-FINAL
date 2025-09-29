@@ -23,8 +23,6 @@ import useVisitNotifications from './hooks/useVisitNotifications';
 import { Avatar } from './components/Avatar';
 import { HostRequestModal } from './components/HostRequestModal';
 import { TalksManager } from './components/TalksManager';
-import { Capacitor } from '@capacitor/core';
-import { PushNotifications } from '@capacitor/push-notifications';
 
 type ViewMode = 'cards' | 'list' | 'calendar';
 type Tab = 'dashboard' | 'planning' | 'messaging' | 'talks' | 'settings';
@@ -156,98 +154,31 @@ const App: React.FC = () => {
     }, [isDarkMode]);
 
     useEffect(() => {
-        const isWeb = Capacitor.getPlatform() === 'web';
         const notificationPromptDismissed = localStorage.getItem('notificationPromptDismissed');
-
-        if (isWeb) {
-            if (
-                typeof window !== 'undefined' && 
-                'Notification' in window && 
-                Notification.permission === 'default' && 
-                !notificationPromptDismissed
-            ) {
-                const timer = setTimeout(() => {
-                    setShowNotificationBanner(true);
-                }, 3000);
-                return () => clearTimeout(timer);
-            }
-        } else { // Mobile (Android/iOS)
-            // For mobile, we might want to show a banner if permissions are not granted
-            // or if the user hasn't been prompted yet.
-            // This part will be handled by PushNotifications.requestPermissions() later.
-            // For now, we just ensure the web banner doesn't show on mobile.
-            setShowNotificationBanner(false);
+        if (
+            typeof window !== 'undefined' && 
+            'Notification' in window && 
+            Notification.permission === 'default' && 
+            !notificationPromptDismissed
+        ) {
+            // Use a small delay to avoid overwhelming the user on page load
+            const timer = setTimeout(() => {
+                setShowNotificationBanner(true);
+            }, 3000);
+            return () => clearTimeout(timer);
         }
     }, []);
 
-    useEffect(() => {
-        const isMobile = Capacitor.getPlatform() !== 'web';
-        if (isMobile) {
-            // Request permission on app start (or when appropriate)
-            PushNotifications.requestPermissions().then(permission => {
-                if (permission.receive === 'granted') {
-                    // Register for push notifications
-                    PushNotifications.register();
-                } else {
-                    // Handle denied permission
-                    console.log('Push notification permission denied');
-                }
-            });
-
-            // On success, we should be able to get a token (works only on real device)
-            PushNotifications.addListener('registration', token => {
-                console.log('Push registration success, token: ' + token.value);
-                // You might want to send this token to your backend server
-            });
-
-            // Some issue with your setup and push will not work
-            PushNotifications.addListener('registrationError', error => {
-                console.log('Error on registration: ' + JSON.stringify(error));
-            });
-
-            // Show us the notification payload if the app is open on our device
-            PushNotifications.addListener('pushNotificationReceived', notification => {
-                console.log('Push received: ' + JSON.stringify(notification));
-                addToast(notification.title + ': ' + notification.body, 'info', 7000);
-            });
-
-            // On tap by the user
-            PushNotifications.addListener('pushNotificationActionPerformed', notification => {
-                console.log('Push action performed: ' + JSON.stringify(notification));
-                // Handle notification tap, e.g., navigate to a specific page
-            });
-        }
-    }, [addToast]);
-
     const handleEnableNotifications = () => {
-        const isWeb = Capacitor.getPlatform() === 'web';
-
-        if (isWeb) {
-            if ('Notification' in window) {
-                Notification.requestPermission().then(permission => {
-                    setNotificationPermission(permission);
-                    setShowNotificationBanner(false);
-                    localStorage.setItem('notificationPromptDismissed', 'true');
-                    if (permission === 'granted') {
-                        addToast("Notifications activées ! Vous recevrez des rappels pour les prochaines visites.", 'success', 7000);
-                    } else {
-                        addToast("Notifications non activées. Gérez-les dans les paramètres de votre navigateur.", 'warning', 7000);
-                    }
-                });
-            }
-        } else { // Mobile
-            PushNotifications.requestPermissions().then(permission => {
-                if (permission.receive === 'granted') {
-                    PushNotifications.register();
-                    setNotificationPermission('granted');
-                    setShowNotificationBanner(false);
-                    localStorage.setItem('notificationPromptDismissed', 'true');
+        if ('Notification' in window) {
+            Notification.requestPermission().then(permission => {
+                setNotificationPermission(permission);
+                setShowNotificationBanner(false);
+                localStorage.setItem('notificationPromptDismissed', 'true');
+                if (permission === 'granted') {
                     addToast("Notifications activées ! Vous recevrez des rappels pour les prochaines visites.", 'success', 7000);
                 } else {
-                    setNotificationPermission('denied');
-                    setShowNotificationBanner(false);
-                    localStorage.setItem('notificationPromptDismissed', 'true');
-                    addToast("Notifications non activées. Gérez-les dans les paramètres de votre appareil.", 'warning', 7000);
+                    addToast("Notifications non activées. Gérez-les dans les paramètres de votre navigateur.", 'warning', 7000);
                 }
             });
         }
@@ -506,7 +437,7 @@ const App: React.FC = () => {
     return (
         <>
             <div className="h-full flex flex-col transition-colors duration-300 overflow-hidden">
-                {showNotificationBanner && Capacitor.getPlatform() === 'web' && (
+                {showNotificationBanner && (
                     <NotificationPermissionBanner
                         onEnable={handleEnableNotifications}
                         onDismiss={handleDismissNotificationBanner}

@@ -6,8 +6,6 @@ import { encrypt, decrypt } from '../utils/crypto';
 import { EncryptionPrompt } from '../components/EncryptionPrompt';
 import { SpinnerIcon } from '../components/Icons';
 import useOnlineStatus from '../hooks/useOnlineStatus';
-import { Capacitor } from '@capacitor/core';
-import { Filesystem, Directory } from '@capacitor/filesystem';
 
 interface AppData {
   speakers: Speaker[];
@@ -530,36 +528,14 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         URL.revokeObjectURL(url);
     }, []);
 
-    const exportData = useCallback(async () => {
+    const exportData = useCallback(() => {
         if (!appData) return;
         const blob = new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' });
         const date = new Date().toISOString().slice(0, 10);
         const fileName = `gestion_visiteurs_tj_backup_${date}.json`;
         
-        const isMobile = Capacitor.getPlatform() !== 'web';
-
-        if (isMobile) {
-            try {
-                const reader = new FileReader();
-                reader.readAsDataURL(blob);
-                reader.onloadend = async () => {
-                    const base64data = reader.result as string;
-                    await Filesystem.writeFile({
-                        path: fileName,
-                        data: base64data,
-                        directory: Directory.Documents,
-                        recursive: true,
-                    });
-                    addToast("Sauvegarde enregistrée dans les documents de l'appareil.", 'success');
-                };
-            } catch (error) {
-                console.error("Error saving file to Documents:", error);
-                addToast("Erreur lors de l'enregistrement de la sauvegarde sur l'appareil.", 'error');
-            }
-        } else {
-            downloadFallback(blob, fileName);
-            addToast("Téléchargement de la sauvegarde démarré.", 'success');
-        }
+        downloadFallback(blob, fileName);
+        addToast("Téléchargement de la sauvegarde démarré.", 'success');
     }, [appData, addToast, downloadFallback]);
 
     const importData = async (data: any) => {
@@ -711,12 +687,12 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 return;
             }
 
-            const headers = cols.map((h: { label: string }) => h.label.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, ''));
-            const dateIndex = headers.findIndex((h: string) => h.includes('data'));
-            const speakerIndex = headers.findIndex((h: string) => h.includes('orador'));
-            const congIndex = headers.findIndex((h: string) => h.includes('kongregason'));
-            const talkNoIndex = headers.findIndex((h: string) => h.includes('n'));
-            const themeIndex = headers.findIndex((h: string) => h.includes('tema'));
+            const headers = cols.map((h: any) => h.label.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, ''));
+            const dateIndex = headers.findIndex(h => h.includes('data'));
+            const speakerIndex = headers.findIndex(h => h.includes('orador'));
+            const congIndex = headers.findIndex(h => h.includes('kongregason'));
+            const talkNoIndex = headers.findIndex(h => h.includes('n'));
+            const themeIndex = headers.findIndex(h => h.includes('tema'));
 
             if ([dateIndex, speakerIndex, congIndex].some(i => i === -1)) {
                 addToast("En-têtes requis manquants: Data, Orador, Kongregason.", 'error');

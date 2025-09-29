@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React from 'react';
 import { CongregationProfile, Host, Speaker, Visit } from '../types';
 import { UNASSIGNED_HOST } from '../constants';
 
@@ -10,7 +10,7 @@ interface DashboardPrintLayoutProps {
     congregationProfile: CongregationProfile;
 }
 
-export const DashboardPrintLayout = forwardRef<HTMLDivElement, DashboardPrintLayoutProps>(({ speakers, hosts, upcomingVisits, archivedVisits, congregationProfile }, ref) => {
+export const DashboardPrintLayout: React.FC<DashboardPrintLayoutProps> = ({ speakers, hosts, upcomingVisits, archivedVisits, congregationProfile }) => {
 
     const visitsNeedingHost = upcomingVisits.filter(v => 
         v.host === UNASSIGNED_HOST && 
@@ -23,7 +23,7 @@ export const DashboardPrintLayout = forwardRef<HTMLDivElement, DashboardPrintLay
     const formatFullDate = (dateString: string) => new Date(dateString + 'T00:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
     return (
-        <div ref={ref} className="p-6 font-sans text-base text-black bg-white">
+        <div className="p-6 font-sans text-base text-black bg-white">
             <div className="text-center mb-6 pb-4 border-b-2 border-black">
                 <h1 className="text-3xl font-bold">{congregationProfile.name}</h1>
                 <p className="text-lg">{congregationProfile.subtitle}</p>
@@ -108,4 +108,4 @@ export const DashboardPrintLayout = forwardRef<HTMLDivElement, DashboardPrintLay
             </section>
         </div>
     );
-});
+};
