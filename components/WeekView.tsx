@@ -65,8 +65,8 @@ export const WeekView: React.FC<WeekViewProps> = ({ visits, onEditVisit }) => {
         <div className="flex items-center gap-4">
           <button onClick={handleGoToToday} className="px-4 py-2 text-sm font-semibold bg-gray-200 dark:bg-background-dark rounded-lg hover:bg-gray-300 dark:hover:bg-primary-light/20">Aujourd'hui</button>
           <div className="flex items-center gap-2">
-            <button onClick={handlePrevWeek} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-primary-light/20"><ChevronLeftIcon className="w-6 h-6" /></button>
-            <button onClick={handleNextWeek} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-primary-light/20"><ChevronRightIcon className="w-6 h-6" /></button>
+            <button onClick={handlePrevWeek} title="Semaine précédente" className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-primary-light/20"><ChevronLeftIcon className="w-6 h-6" /></button>
+            <button onClick={handleNextWeek} title="Semaine suivante" className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-primary-light/20"><ChevronRightIcon className="w-6 h-6" /></button>
           </div>
         </div>
         <h2 className="text-xl font-bold text-text-main dark:text-text-main-dark">

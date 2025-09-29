@@ -385,12 +385,14 @@ const App: React.FC = () => {
                             <div className="flex justify-center gap-4 mb-4">
                                 <button
                                     onClick={() => setCalendarViewMode('month')}
+                                    title="Afficher le calendrier par mois"
                                     className={`px-4 py-2 rounded-lg text-sm font-semibold ${calendarViewMode === 'month' ? 'bg-primary text-white' : 'bg-gray-200 dark:bg-background-dark text-text-main dark:text-text-main-dark'}`}
                                 >
                                     Mois
                                 </button>
                                 <button
                                     onClick={() => setCalendarViewMode('week')}
+                                    title="Afficher le calendrier par semaine"
                                     className={`px-4 py-2 rounded-lg text-sm font-semibold ${calendarViewMode === 'week' ? 'bg-primary text-white' : 'bg-gray-200 dark:bg-background-dark text-text-main dark:text-text-main-dark'}`}
                                 >
                                     Semaine
