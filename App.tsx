@@ -391,6 +391,7 @@ const App: React.FC = () => {
                             />
                         ) : (
                             <CalendarView 
+                                visits={visits}
                                 onEditVisit={handleEditVisit}
                             />
                         )}
@@ -454,7 +455,7 @@ const App: React.FC = () => {
                                     </div>
                                 </div>
                                 <div className="flex items-center space-x-2">
-                                    <button onClick={() => setIsSearchModalOpen(true)} className="p-2 rounded-full text-text-main dark:text-text-main-dark hover:bg-gray-200 dark:hover:bg-primary-light transition-colors">
+                                    <button onClick={() => setIsSearchModalOpen(true)} title="Rechercher" className="p-2 rounded-full text-text-main dark:text-text-main-dark hover:bg-gray-200 dark:hover:bg-primary-light transition-colors">
                                         <SearchIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                                     </button>
                                     <button onClick={toggleTheme} className="p-2 rounded-full text-text-main dark:text-text-main-dark hover:bg-gray-200 dark:hover:bg-primary-light transition-colors">
