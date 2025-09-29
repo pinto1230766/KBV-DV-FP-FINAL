@@ -458,7 +458,7 @@ const App: React.FC = () => {
                                     <button onClick={() => setIsSearchModalOpen(true)} title="Rechercher" className="p-2 rounded-full text-text-main dark:text-text-main-dark hover:bg-gray-200 dark:hover:bg-primary-light transition-colors">
                                         <SearchIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                                     </button>
-                                    <button onClick={toggleTheme} className="p-2 rounded-full text-text-main dark:text-text-main-dark hover:bg-gray-200 dark:hover:bg-primary-light transition-colors">
+                                    <button onClick={toggleTheme} title={isDarkMode ? "Activer le mode clair" : "Activer le mode sombre"} className="p-2 rounded-full text-text-main dark:text-text-main-dark hover:bg-gray-200 dark:hover:bg-primary-light transition-colors">
                                         {effectiveTheme === 'light' ? <MoonIcon className="w-5 h-5 sm:w-6 sm:h-6" /> : <SunIcon className="w-5 h-5 sm:w-6 sm:h-6" />}
                                     </button>
                                 </div>
@@ -487,13 +487,13 @@ const App: React.FC = () => {
                     {activeTab === 'planning' && (
                         <div className="flex flex-col sm:flex-row justify-end items-center mb-4 gap-4 pt-4 sm:pt-0 no-print">
                              <div className="flex items-center rounded-lg p-1 bg-gray-200 dark:bg-primary-light/20">
-                                <button onClick={() => setViewMode('cards')} className={`px-3 py-1 text-sm font-semibold rounded-md flex items-center gap-2 ${viewMode === 'cards' ? 'bg-white dark:bg-card-dark shadow-md' : ''}`}>
+                                <button onClick={() => setViewMode('cards')} title="Afficher en mode cartes" className={`px-3 py-1 text-sm font-semibold rounded-md flex items-center gap-2 ${viewMode === 'cards' ? 'bg-white dark:bg-card-dark shadow-md' : ''}`}>
                                    <DashboardIcon className="w-5 h-5" /> Cartes
                                 </button>
-                                <button onClick={() => setViewMode('list')} className={`px-3 py-1 text-sm font-semibold rounded-md flex items-center gap-2 ${viewMode === 'list' ? 'bg-white dark:bg-card-dark shadow-md' : ''}`}>
+                                <button onClick={() => setViewMode('list')} title="Afficher en mode liste" className={`px-3 py-1 text-sm font-semibold rounded-md flex items-center gap-2 ${viewMode === 'list' ? 'bg-white dark:bg-card-dark shadow-md' : ''}`}>
                                    <ListViewIcon className="w-5 h-5" /> Liste
                                 </button>
-                                <button onClick={() => setViewMode('calendar')} className={`px-3 py-1 text-sm font-semibold rounded-md flex items-center gap-2 ${viewMode === 'calendar' ? 'bg-white dark:bg-card-dark shadow-md' : ''}`}>
+                                <button onClick={() => setViewMode('calendar')} title="Afficher en mode calendrier" className={`px-3 py-1 text-sm font-semibold rounded-md flex items-center gap-2 ${viewMode === 'calendar' ? 'bg-white dark:bg-card-dark shadow-md' : ''}`}>
                                    <CalendarIcon className="w-5 h-5" /> Calendrier
                                 </button>
                             </div>
