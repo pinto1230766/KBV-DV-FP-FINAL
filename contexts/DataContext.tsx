@@ -6,6 +6,8 @@ import { encrypt, decrypt } from '../utils/crypto';
 import { EncryptionPrompt } from '../components/EncryptionPrompt';
 import { SpinnerIcon } from '../components/Icons';
 import useOnlineStatus from '../hooks/useOnlineStatus';
+import { Capacitor } from '@capacitor/core';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 
 interface AppData {
   speakers: Speaker[];
@@ -528,14 +530,30 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         URL.revokeObjectURL(url);
     }, []);
 
-    const exportData = useCallback(() => {
+    const exportData = useCallback(async () => {
         if (!appData) return;
-        const blob = new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' });
+        const jsonData = JSON.stringify(appData, null, 2);
         const date = new Date().toISOString().slice(0, 10);
         const fileName = `gestion_visiteurs_tj_backup_${date}.json`;
-        
-        downloadFallback(blob, fileName);
-        addToast("Téléchargement de la sauvegarde démarré.", 'success');
+
+        if (Capacitor.isNativePlatform()) {
+            try {
+                await Filesystem.writeFile({
+                    path: fileName,
+                    data: jsonData,
+                    directory: Directory.Documents,
+                    encoding: Encoding.UTF8,
+                });
+                addToast(`Sauvegarde enregistrée dans le dossier Documents: ${fileName}`, 'success');
+            } catch (error) {
+                console.error('Erreur lors de la sauvegarde sur l\'appareil natif', error);
+                addToast("Erreur lors de la sauvegarde sur l'appareil.", 'error');
+            }
+        } else {
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            downloadFallback(blob, fileName);
+            addToast("Téléchargement de la sauvegarde démarré.", 'success');
+        }
     }, [appData, addToast, downloadFallback]);
 
     const importData = async (data: any) => {
