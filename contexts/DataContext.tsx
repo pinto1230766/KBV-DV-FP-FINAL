@@ -546,13 +546,13 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 await Filesystem.writeFile({
                     path: fileName,
                     data: jsonData,
-                    directory: Directory.Data,
+                    directory: Directory.Documents,
                     encoding: Encoding.UTF8,
                 });
                 addToast(`Sauvegarde enregistrée dans le dossier Documents: ${fileName}`, 'success');
             } catch (error) {
                 console.error('Erreur lors de la sauvegarde sur l\'appareil natif', error);
-                addToast("Erreur lors de la sauvegarde sur l'appareil.", 'error');
+                addToast(`Erreur lors de la sauvegarde sur l'appareil : ${error instanceof Error ? error.message : String(error)}`, 'error');
             }
         } else {
             const blob = new Blob([jsonData], { type: 'application/json' });

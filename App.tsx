@@ -4,6 +4,7 @@ import { UpcomingVisits } from './components/UpcomingVisits';
 import { SpeakerList } from './components/SpeakerList';
 import { ScheduleVisitModal } from './components/ScheduleVisitModal';
 import { CalendarView } from './components/CalendarView';
+import { WeekView } from './components/WeekView';
 import { MessagingCenter } from './components/MessagingCenter';
 import { SpeakerDetailsModal } from './components/SpeakerDetailsModal';
 import { Settings } from './components/Settings';
@@ -65,6 +66,7 @@ const App: React.FC = () => {
 
     // UI & Settings State
     const [viewMode, setViewMode] = useState<ViewMode>('cards');
+    const [calendarViewMode, setCalendarViewMode] = useState<'month' | 'week'>('month');
     const [activeTab, setActiveTab] = useState<Tab>('dashboard');
     const [messagingLanguage, setMessagingLanguage] = useState<Language>('fr');
     const [isImporting, setIsImporting] = useState(false);
@@ -379,6 +381,22 @@ const App: React.FC = () => {
                             onComplete={handleCompleteVisit}
                             onCompleteMultiple={handleCompleteMultipleVisits}
                         />
+                        {viewMode === 'calendar' && (
+                            <div className="flex justify-center gap-4 mb-4">
+                                <button
+                                    onClick={() => setCalendarViewMode('month')}
+                                    className={`px-4 py-2 rounded-lg text-sm font-semibold ${calendarViewMode === 'month' ? 'bg-primary text-white' : 'bg-gray-200 dark:bg-background-dark text-text-main dark:text-text-main-dark'}`}
+                                >
+                                    Mois
+                                </button>
+                                <button
+                                    onClick={() => setCalendarViewMode('week')}
+                                    className={`px-4 py-2 rounded-lg text-sm font-semibold ${calendarViewMode === 'week' ? 'bg-primary text-white' : 'bg-gray-200 dark:bg-background-dark text-text-main dark:text-text-main-dark'}`}
+                                >
+                                    Semaine
+                                </button>
+                            </div>
+                        )}
                         {viewMode === 'cards' || viewMode === 'list' ? (
                             <UpcomingVisits
                                 visits={upcomingVisits}
@@ -390,10 +408,17 @@ const App: React.FC = () => {
                                 viewMode={viewMode}
                             />
                         ) : (
-                            <CalendarView 
-                                visits={visits}
-                                onEditVisit={handleEditVisit}
-                            />
+                            calendarViewMode === 'month' ? (
+                                <CalendarView 
+                                    visits={visits}
+                                    onEditVisit={handleEditVisit}
+                                />
+                            ) : (
+                                <WeekView
+                                    visits={visits}
+                                    onEditVisit={handleEditVisit}
+                                />
+                            )
                         )}
                         <div ref={speakerListRef} className="my-8">
                             <SpeakerList
