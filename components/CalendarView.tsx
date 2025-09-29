@@ -21,6 +21,7 @@ interface StayInfo {
 }
 
 interface CalendarViewProps {
+    visits: Visit[];
     onEditVisit: (visit: Visit) => void;
 }
 
@@ -54,14 +55,14 @@ const isHostAvailable = (host: Host, visitDate: string): boolean => {
     });
 };
 
-const statusInfo: { [key in Visit['status'] | 'completed']: { text: string; color: string } } = {
+const statusInfo: Record<Visit['status'] | 'completed', { text: string; color: string }> = {
   pending: { text: 'En attente', color: 'bg-amber-400 text-amber-900' },
   confirmed: { text: 'Confirmé', color: 'bg-green-500 text-white' },
   cancelled: { text: 'Annulé', color: 'bg-red-500 text-white' },
   completed: { text: 'Terminé', color: 'bg-gray-500 text-white' },
 };
 
-const stayColors: { [key in Visit['status'] | 'completed']: { color: string; textColor: string } } = {
+const stayColors: Record<Visit['status'] | 'completed', { color: string; textColor: string }> = {
     pending: { color: 'bg-amber-400', textColor: 'text-amber-900' },
     confirmed: { color: 'bg-green-500', textColor: 'text-white' },
     completed: { color: 'bg-gray-500', textColor: 'text-white' },
@@ -69,12 +70,12 @@ const stayColors: { [key in Visit['status'] | 'completed']: { color: string; tex
 };
 
 
-export const CalendarView: React.FC<CalendarViewProps> = ({ onEditVisit }) => {
-    const { visits, archivedVisits, hosts } = useData();
+export const CalendarView: React.FC<CalendarViewProps> = ({ visits, onEditVisit }) => {
+    const { hosts } = useData();
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDay, setSelectedDay] = useState<DayDetails | null>(null);
 
-    const archivedVisitIds = useMemo(() => new Set(archivedVisits.map(v => v.visitId)), [archivedVisits]);
+    const archivedVisitIds = useMemo(() => new Set(visits.filter(v => v.status === 'completed').map(v => v.visitId)), [visits]);
 
     const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 
@@ -96,13 +97,12 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ onEditVisit }) => {
 
 
     const calendarGridDetails = useMemo(() => {
-        const allVisits = [...archivedVisits, ...visits];
         const year = currentDate.getFullYear();
         const yearHolidays = holidays[year] || [];
         
         const visitMap = new Map<string, {visit?: Visit, stays: Visit[]}>();
         
-        allVisits.forEach(visit => {
+        visits.forEach(visit => {
             if (visit.status === 'cancelled') return;
             const dateStr = visit.visitDate;
             if (!visitMap.has(dateStr)) visitMap.set(dateStr, { stays: [] });
@@ -195,7 +195,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ onEditVisit }) => {
         }
 
         return processedWeeks.flat();
-    }, [calendarGridDates, visits, archivedVisits, hosts, currentDate, archivedVisitIds]);
+    }, [calendarGridDates, visits, hosts, currentDate, archivedVisitIds]);
 
 
     const handlePrevMonth = () => {
@@ -281,10 +281,10 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ onEditVisit }) => {
         <div className="bg-card-light dark:bg-card-dark rounded-xl shadow-lg p-4 sm:p-6">
             <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-2">
                 <div className="flex items-center gap-2">
-                    <button onClick={handlePrevMonth} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-primary-light/20">
+                    <button onClick={handlePrevMonth} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-primary-light/20" title="Mois précédent">
                         <ChevronLeftIcon className="w-6 h-6 text-text-muted dark:text-text-muted-dark" />
                     </button>
-                    <button onClick={handleNextMonth} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-primary-light/20">
+                    <button onClick={handleNextMonth} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-primary-light/20" title="Mois suivant">
                         <ChevronRightIcon className="w-6 h-6 text-text-muted dark:text-text-muted-dark" />
                     </button>
                      <button onClick={handleToday} className="px-3 py-1.5 border border-border-light dark:border-border-dark rounded-md text-sm font-semibold hover:bg-gray-100 dark:hover:bg-primary-light/20 no-print">
@@ -338,7 +338,11 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ onEditVisit }) => {
                            
                             <div className="mt-1 space-y-0.5 overflow-hidden flex-grow relative">
                                 {stays.map(stay => (
-                                    <div key={stay.visit.visitId} style={{ top: `${stay.track * 1.35}rem`}} className={`absolute left-0 right-0 h-5 text-xs font-bold leading-tight flex items-center gap-1 z-0 ${stay.color} ${stay.textColor} ${stay.isStart ? 'rounded-l-md' : ''} ${stay.isEnd ? 'rounded-r-md' : ''}`} title={stay.visit.nom}>
+                                    <div
+                                        key={stay.visit.visitId}
+                                        className={`absolute left-0 right-0 h-5 text-xs font-bold leading-tight flex items-center gap-1 z-0 ${stay.color} ${stay.textColor} ${stay.isStart ? 'rounded-l-md' : ''} ${stay.isEnd ? 'rounded-r-md' : ''} stay-track-${stay.track}`}
+                                        title={stay.visit.nom}
+                                    >
                                         {stay.showText && (
                                             <>
                                                 {/* FIX: Wrap icons in a span with a title to provide tooltips without passing an invalid prop to the Icon component. */}

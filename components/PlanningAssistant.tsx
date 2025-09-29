@@ -1,29 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Visit } from '../types';
 import { useData } from '../contexts/DataContext';
 import { UNASSIGNED_HOST } from '../constants';
 import { ArrowRightIcon, ExclamationTriangleIcon } from './Icons';
-import { CalendarView } from './CalendarView';
-import { WeekView } from './WeekView';
-
-type ViewMode = 'month' | 'week';
-
-const ViewSwitcher: React.FC<{ view: ViewMode; setView: (view: ViewMode) => void }> = ({ view, setView }) => (
-    <div className="flex items-center bg-gray-200 dark:bg-background-dark rounded-lg p-1">
-        <button 
-            onClick={() => setView('month')}
-            className={`px-4 py-1 text-sm font-semibold rounded-md transition-colors ${view === 'month' ? 'bg-white dark:bg-primary text-primary dark:text-white' : 'text-text-muted dark:text-text-muted-dark'}`}
-        >
-            Mois
-        </button>
-        <button 
-            onClick={() => setView('week')}
-            className={`px-4 py-1 text-sm font-semibold rounded-md transition-colors ${view === 'week' ? 'bg-white dark:bg-primary text-primary dark:text-white' : 'text-text-muted dark:text-text-muted-dark'}`}
-        >
-            Semaine
-        </button>
-    </div>
-);
 
 interface PlanningAssistantProps {
   onOpenHostRequestModal: (visits: Visit[]) => void;
@@ -46,10 +25,7 @@ const getUrgencyInfo = (visit: Visit) => {
 };
 
 export const PlanningAssistant: React.FC<PlanningAssistantProps> = (props) => {
-    const { upcomingVisits, visits, archivedVisits } = useData();
-    const [viewMode, setViewMode] = useState<ViewMode>('month');
-
-    const allVisits = useMemo(() => [...visits, ...archivedVisits], [visits, archivedVisits]);
+    const { upcomingVisits } = useData();
 
     const visitsNeedingHost = useMemo(() =>
         upcomingVisits.filter(v =>
@@ -65,72 +41,56 @@ export const PlanningAssistant: React.FC<PlanningAssistantProps> = (props) => {
 
     if (!hasActions) {
         return (
-            <div className="bg-card-light dark:bg-card-dark p-6 rounded-xl shadow-lg">
-                 <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-2xl font-bold text-secondary dark:text-white">Assistant de planification</h2>
-                    <ViewSwitcher view={viewMode} setView={setViewMode} />
-                </div>
-                {viewMode === 'month' ? (
-                    <CalendarView visits={allVisits} onEditVisit={props.onEditVisitClick} />
-                ) : (
-                    <WeekView visits={allVisits} onEditVisit={props.onEditVisitClick} />
-                )}
+            <div className="bg-card-light dark:bg-card-dark p-6 rounded-xl shadow-lg text-center">
+                 <h2 className="text-2xl font-bold text-secondary dark:text-white mb-2">Assistant de planification</h2>
+                 <p className="text-green-600 dark:text-green-400 font-semibold">Tout est à jour !</p>
+                 <p className="text-text-muted dark:text-text-muted-dark mt-1">Aucune action urgente n'est requise pour le moment.</p>
             </div>
         );
     }
     
     return (
-        <div className="space-y-6">
-            <div className="bg-card-light dark:bg-card-dark p-6 rounded-xl shadow-lg">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-2xl font-bold text-secondary dark:text-white">Assistant de planification</h2>
-                    <ViewSwitcher view={viewMode} setView={setViewMode} />
-                </div>
-                <div className="space-y-4">
-                    {visitsNeedingHost.length > 0 && (
-                        <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
-                            <div className="flex justify-between items-center mb-3">
-                                <h3 className="font-bold text-amber-800 dark:text-amber-300 flex items-center gap-2">
-                                    <ExclamationTriangleIcon className="w-6 h-6"/>
-                                    {visitsNeedingHost.length} visite{visitsNeedingHost.length > 1 ? 's' : ''} sans accueil
-                                </h3>
-                                {visitsNeedingHost.length > 2 && (
-                                    <button onClick={() => props.onOpenHostRequestModal(visitsNeedingHost)} className="text-sm font-semibold text-primary dark:text-primary-light hover:underline">
-                                        Demande groupée
-                                    </button>
-                                )}
-                            </div>
-                            <div className="space-y-2">
-                                {visitsNeedingHost.slice(0,3).map(visit => {
-                                    const urgency = getUrgencyInfo(visit);
-                                    return (
-                                        <div key={visit.visitId} onClick={() => props.onEditVisitClick(visit)} className="flex items-center justify-between p-3 bg-card-light dark:bg-card-dark rounded-md cursor-pointer hover:shadow-md transition-shadow">
-                                            <div>
-                                                <p className="font-semibold">{visit.nom}</p>
-                                                <p className="text-xs text-text-muted dark:text-text-muted-dark">{new Date(visit.visitDate + 'T00:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <span className={`px-2 py-1 text-xs font-bold rounded-full ${urgency.color}`}>{urgency.text}</span>
-                                                <ArrowRightIcon className="w-5 h-5 text-text-muted dark:text-text-muted-dark"/>
-                                            </div>
-                                        </div>
-                                    )
-                                })}
-                                 {visitsNeedingHost.length > 3 && (
-                                    <p className="text-center text-xs text-text-muted dark:text-text-muted-dark pt-2">
-                                        et {visitsNeedingHost.length - 3} autre(s)...
-                                    </p>
-                                )}
-                            </div>
+        <div className="bg-card-light dark:bg-card-dark p-6 rounded-xl shadow-lg">
+            <h2 className="text-2xl font-bold text-secondary dark:text-white mb-4">Assistant de planification</h2>
+            <div className="space-y-4">
+                {visitsNeedingHost.length > 0 && (
+                    <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                        <div className="flex justify-between items-center mb-3">
+                            <h3 className="font-bold text-amber-800 dark:text-amber-300 flex items-center gap-2">
+                                <ExclamationTriangleIcon className="w-6 h-6"/>
+                                {visitsNeedingHost.length} visite{visitsNeedingHost.length > 1 ? 's' : ''} sans accueil
+                            </h3>
+                            {visitsNeedingHost.length > 2 && (
+                                <button onClick={() => props.onOpenHostRequestModal(visitsNeedingHost)} className="text-sm font-semibold text-primary dark:text-primary-light hover:underline">
+                                    Demande groupée
+                                </button>
+                            )}
                         </div>
-                    )}
-                </div>
+                        <div className="space-y-2">
+                            {visitsNeedingHost.slice(0,3).map(visit => {
+                                const urgency = getUrgencyInfo(visit);
+                                return (
+                                    <div key={visit.visitId} onClick={() => props.onEditVisitClick(visit)} className="flex items-center justify-between p-3 bg-card-light dark:bg-card-dark rounded-md cursor-pointer hover:shadow-md transition-shadow">
+                                        <div>
+                                            <p className="font-semibold">{visit.nom}</p>
+                                            <p className="text-xs text-text-muted dark:text-text-muted-dark">{new Date(visit.visitDate + 'T00:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <span className={`px-2 py-1 text-xs font-bold rounded-full ${urgency.color}`}>{urgency.text}</span>
+                                            <ArrowRightIcon className="w-5 h-5 text-text-muted dark:text-text-muted-dark"/>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                             {visitsNeedingHost.length > 3 && (
+                                <p className="text-center text-xs text-text-muted dark:text-text-muted-dark pt-2">
+                                    et {visitsNeedingHost.length - 3} autre(s)...
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
-            {viewMode === 'month' ? (
-                <CalendarView visits={allVisits} onEditVisit={props.onEditVisitClick} />
-            ) : (
-                <WeekView visits={allVisits} onEditVisit={props.onEditVisitClick} />
-            )}
         </div>
     );
 };

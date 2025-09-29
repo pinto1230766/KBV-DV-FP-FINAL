@@ -53,6 +53,11 @@ html, body, #root {
 .theme-jw:not(.dark) .text-text-muted { color: #7a7392; }
 .theme-jw:not(.dark) .font-display { color: #5d5375; }
 
+/* Calendar Stay Tracks */
+.stay-track-0 { top: 0rem; }
+.stay-track-1 { top: 1.35rem; }
+.stay-track-2 { top: 2.70rem; }
+
 @media print {
   body, #root {
     height: auto;
