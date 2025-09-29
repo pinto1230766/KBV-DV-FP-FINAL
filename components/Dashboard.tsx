@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef } from 'react';
 import { Visit, MessageRole, MessageType } from '../types';
 import { useData } from '../contexts/DataContext';
 import { 
@@ -14,6 +14,10 @@ import { PlanningAssistant } from './PlanningAssistant';
 import { DashboardBarChart } from './DashboardBarChart';
 import { PrintPreviewModal } from './PrintPreviewModal';
 import { DashboardPrintLayout } from './DashboardPrintLayout';
+import { Capacitor } from '@capacitor/core';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import { Share } from '@capacitor/share';
+import html2pdf from 'html2pdf.js';
 
 interface DashboardProps {
     onScheduleVisitClick: () => void;
@@ -73,6 +77,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
 }) => {
     const { hosts, speakers, archivedVisits, upcomingVisits, visits, congregationProfile } = useData();
     const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
+    const dashboardContentRef = useRef<HTMLDivElement>(null);
+    const isMobile = Capacitor.getPlatform() !== 'web';
     
     const allVisits = useMemo(() => [...upcomingVisits, ...archivedVisits], [upcomingVisits, archivedVisits]);
     
@@ -82,6 +88,36 @@ export const Dashboard: React.FC<DashboardProps> = ({
         { title: "Visites à venir", value: upcomingVisits.length, icon: CalendarDaysIcon, color: "bg-highlight", onClick: onGoToPlanning },
         { title: "Visites archivées", value: archivedVisits.length, icon: CheckCircleIcon, color: "bg-primary", onClick: onGoToSettings },
     ];
+
+    const handleSharePdf = async () => {
+        if (!dashboardContentRef.current) return;
+
+        const element = dashboardContentRef.current;
+        const options = {
+            margin: 10,
+            filename: `Rapport_Tableau_de_Bord_${new Date().toLocaleDateString('fr-FR')}.pdf`,
+            image: { type: 'jpeg' as 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as 'portrait' },
+        };
+
+        try {
+            const pdfBase64 = await html2pdf().from(element).set(options).outputPdf('base64');
+            const fileName = `Rapport_Tableau_de_Bord_${new Date().toISOString().slice(0,10)}.pdf`;
+
+            await Share.share({
+                title: 'Partager le rapport du tableau de bord',
+                text: 'Voici le rapport de votre tableau de bord.',
+                url: `data:application/pdf;base64,${pdfBase64}`,
+                dialogTitle: 'Partager le PDF',
+            });
+
+            setIsPrintModalOpen(false);
+        } catch (error) {
+            console.error('Erreur lors de la génération ou du partage du PDF', error);
+            alert('Impossible de générer ou de partager le PDF.');
+        }
+    };
 
     return (
         <>
@@ -120,7 +156,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </div>
             </div>
             {isPrintModalOpen && (
-                <PrintPreviewModal onClose={() => setIsPrintModalOpen(false)}>
+                <PrintPreviewModal 
+                    onClose={() => setIsPrintModalOpen(false)}
+                    isMobile={isMobile}
+                    onSharePdf={handleSharePdf}
+                >
                     <DashboardPrintLayout 
                         speakers={speakers}
                         hosts={hosts}
