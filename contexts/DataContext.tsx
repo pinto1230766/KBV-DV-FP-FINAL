@@ -538,10 +538,15 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         if (Capacitor.isNativePlatform()) {
             try {
+                const result = await Filesystem.requestPermissions();
+                if (result.publicStorage === 'denied') {
+                    addToast("Permission de stockage refusée. Impossible de sauvegarder.", 'error');
+                    return;
+                }
                 await Filesystem.writeFile({
                     path: fileName,
                     data: jsonData,
-                    directory: Directory.Documents,
+                    directory: Directory.Data,
                     encoding: Encoding.UTF8,
                 });
                 addToast(`Sauvegarde enregistrée dans le dossier Documents: ${fileName}`, 'success');
