@@ -5,9 +5,11 @@ import { useData } from '../contexts/DataContext';
 interface PrintPreviewModalProps {
     children: ReactNode;
     onClose: () => void;
+    isMobile: boolean;
+    onSharePdf: () => Promise<void>;
 }
 
-export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({ children, onClose }) => {
+export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({ children, onClose, isMobile, onSharePdf }) => {
     const { congregationProfile } = useData();
 
     // Call window.print() directly from the user's click event handler.
@@ -44,13 +46,23 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({ children, 
                     <div className="p-4 bg-card-light dark:bg-card-dark flex justify-between items-center rounded-t-xl border-b border-border-light dark:border-border-dark flex-shrink-0">
                         <h2 className="text-xl font-bold text-text-main dark:text-text-main-dark">Aperçu avant impression</h2>
                         <div className="flex items-center gap-2">
-                            <button
-                                onClick={handlePrint}
-                                className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-light text-white font-semibold rounded-lg"
-                            >
-                                <PrintIcon className="w-5 h-5"/>
-                                Lancer l'impression
-                            </button>
+                            {isMobile ? (
+                                <button
+                                    onClick={onSharePdf}
+                                    className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-light text-white font-semibold rounded-lg"
+                                >
+                                    <PrintIcon className="w-5 h-5"/>
+                                    Partager le PDF
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={handlePrint}
+                                    className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-light text-white font-semibold rounded-lg"
+                                >
+                                    <PrintIcon className="w-5 h-5"/>
+                                    Lancer l'impression
+                                </button>
+                            )}
                             <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-primary-light/20">
                                 <XIcon className="w-6 h-6" />
                             </button>
